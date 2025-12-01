@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block title %}Kelola Pengguna - E-Learning Platform{% endblock %}
+
+{% block content %}
+<div class="space-y-8">
+    <!-- Header -->
+    <div class="bg-gradient-to-r from-dark-green to-lime rounded-lg p-8 text-white">
+        <h1 class="text-4xl font-bold">Kelola Pengguna</h1>
+        <p class="text-lg opacity-90 mt-2">Lihat dan kelola semua pengguna platform</p>
+    </div>
+    
+    <!-- Users Table -->
+    <div class="bg-white rounded-lg shadow-sm p-8">
+        {% if users.items %}
+            <div class="overflow-x-auto">
+                <table class="min-w-full">
+                    <thead class="bg-light-gray">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-sm font-semibold text-dark-green">Nama</th>
+                            <th class="px-6 py-3 text-left text-sm font-semibold text-dark-green">Email</th>
+                            <th class="px-6 py-3 text-left text-sm font-semibold text-dark-green">Role</th>
+                            <th class="px-6 py-3 text-left text-sm font-semibold text-dark-green">Status</th>
+                            <th class="px-6 py-3 text-left text-sm font-semibold text-dark-green">Terdaftar</th>
+                            <th class="px-6 py-3 text-left text-sm font-semibold text-dark-green">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-border-gray">
+                        {% for user in users.items %}
+                            <tr class="hover:bg-light-gray">
+                                <td class="px-6 py-4 text-sm text-gray-700">{{ user.full_name }}</td>
+                                <td class="px-6 py-4 text-sm text-gray-700">{{ user.email }}</td>
+                                <td class="px-6 py-4 text-sm">
+                                    <span class="bg-lime text-dark-green px-3 py-1 rounded text-xs font-semibold">{{ user.role.upper() }}</span>
+                                </td>
+                                <td class="px-6 py-4 text-sm">
+                                    <span class="{% if user.is_active %}bg-green-100 text-green-800{% else %}bg-red-100 text-red-800{% endif %} px-3 py-1 rounded text-xs font-semibold">
+                                        {% if user.is_active %}Aktif{% else %}Nonaktif{% endif %}
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 text-sm text-gray-700">{{ user.created_at.strftime('%d %b %Y') }}</td>
+                                <td class="px-6 py-4 text-sm">
+                                    <div class="flex gap-2">
+                                        <a href="{{ url_for('admin.edit_user', user_id=user.id) }}" class="text-lime hover:text-dark-green font-semibold">Edit</a>
+                                        {% if user.id != current_user.id %}
+                                            <form method="POST" action="{{ url_for('admin.delete_user', user_id=user.id) }}" style="display: inline;">
+                                                <button type="submit" class="text-red-500 hover:text-red-700 font-semibold" onclick="return confirm('Hapus pengguna ini?')">Hapus</button>
+                                            </form>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Pagination -->
+            <div class="mt-6 flex justify-between items-center">
+                <div class="text-sm text-gray-600">
+                    Menampilkan halaman {{ users.page }} dari {{ users.pages }}
+                </div>
+                <div class="flex gap-2">
+                    {% if users.has_prev %}
+                        <a href="{{ url_for('admin.manage_users', page=users.prev_num) }}" class="bg-dark-green text-white px-4 py-2 rounded hover:bg-lime hover:text-dark-green transition">← Sebelumnya</a>
+                    {% endif %}
+                    {% if users.has_next %}
+                        <a href="{{ url_for('admin.manage_users', page=users.next_num) }}" class="bg-dark-green text-white px-4 py-2 rounded hover:bg-lime hover:text-dark-green transition">Selanjutnya →</a>
+                    {% endif %}
+                </div>
+            </div>
+        {% else %}
+            <p class="text-center text-gray-600 py-8">Belum ada pengguna terdaftar.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

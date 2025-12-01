@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+
+{% block title %}{{ assessment.title }} - E-Learning Platform{% endblock %}
+
+{% block content %}
+<div class="space-y-8">
+    <!-- Breadcrumb -->
+    <div class="text-sm text-gray-600">
+        <a href="{{ url_for('student.dashboard') }}" class="hover:text-lime">Dashboard</a> / 
+        <a href="{{ url_for('student.course', course_id=course.id) }}" class="hover:text-lime">{{ course.title }}</a> / 
+        <a href="{{ url_for('student.module', module_id=module.id) }}" class="hover:text-lime">{{ module.title }}</a> / 
+        <span class="text-dark-green font-semibold">{{ assessment.title }}</span>
+    </div>
+    
+    <!-- Header -->
+    <div class="bg-gradient-to-r from-dark-green to-lime rounded-lg p-8 text-white">
+        <h1 class="text-4xl font-bold mb-2">{{ assessment.title }}</h1>
+        <p class="text-lg opacity-90">{{ assessment.description }}</p>
+    </div>
+    
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Main Content -->
+        <div class="lg:col-span-2">
+            <div class="bg-white rounded-lg shadow-sm p-8">
+                {% if assessment.instructions %}
+                    <div class="bg-light-gray p-6 rounded-lg mb-8 border-l-4 border-lime">
+                        <h3 class="font-semibold text-dark-green mb-3">Petunjuk Pengerjaan</h3>
+                        <p class="text-gray-700">{{ assessment.instructions }}</p>
+                    </div>
+                {% endif %}
+                
+                {% if existing_result and not assessment.allow_multiple_attempts %}
+                    <!-- Already Submitted -->
+                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-6">
+                        <h3 class="font-semibold text-blue-900 mb-2">Penilaian Sudah Dikerjakan</h3>
+                        <p class="text-blue-800 mb-4">Anda sudah mengumpulkan jawaban untuk penilaian ini pada {{ existing_result.submitted_at.strftime('%d %b %Y %H:%M') }}.</p>
+                        
+                        {% if existing_result.status == 'graded' %}
+                            <div class="mt-6 p-4 bg-white rounded border border-blue-200">
+                                <p class="text-sm text-gray-600">Nilai</p>
+                                <p class="text-3xl font-bold text-lime">{{ existing_result.percentage | round(1) }}%</p>
+                                {% if existing_result.feedback %}
+                                    <div class="mt-4">
+                                        <p class="text-sm font-semibold text-dark-green mb-2">Umpan Balik Instruktur</p>
+                                        <p class="text-gray-700">{{ existing_result.feedback }}</p>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        {% else %}
+                            <p class="text-blue-800">Jawaban Anda sedang dinilai oleh instruktur.</p>
+                        {% endif %}
+                    </div>
+                {% else %}
+                    <!-- Prayer prompt modal shown before form -->
+                    <div id="prayer-prompt" class="bg-white rounded-lg shadow p-6 mb-6">
+                        <h3 class="font-semibold text-dark-green mb-2">Sebelum Mengerjakan…</h3>
+                        <p class="text-gray-700 mb-4">🙏 {{ PHRASE_BISMILLAH_PROMPT }} 😊</p>
+                        <div class="flex gap-3">
+                            <button id="play-doa" type="button" class="px-4 py-2 bg-light-gray rounded hover:bg-border-gray">Putar Doa Singkat</button>
+                            <button id="start-assessment" type="button" class="px-4 py-2 btn-cta btn-pulse text-white rounded">Bismillah, Lanjutkan</button>
+                        </div>
+                    </div>
+
+                    <!-- Submission Form (hidden until user clicks Lanjutkan) -->
+                    <form id="assessment-form" method="POST" class="space-y-6" style="display:none;">
+                        {% if assessment.assessment_type == 'quiz' %}
+                            <div class="space-y-4">
+                                <p class="text-sm text-gray-600">Jawablah pertanyaan di bawah ini:</p>
+                                <textarea name="submission_text" rows="8" required 
+                                         class="w-full px-4 py-3 border border-border-gray rounded-lg focus:outline-none focus:border-lime focus:ring-2 focus:ring-lime"
+                                         placeholder="Ketik jawaban Anda di sini..."></textarea>
+                            </div>
+                        {% elif assessment.assessment_type == 'assignment' %}
+                            <div class="space-y-4">
+                                <p class="text-sm text-gray-600">Kumpulkan tugas Anda di bawah ini:</p>
+                                <textarea name="submission_text" rows="8" required 
+                                         class="w-full px-4 py-3 border border-border-gray rounded-lg focus:outline-none focus:border-lime focus:ring-2 focus:ring-lime"
+                                         placeholder="Tuliskan jawaban atau deskripsi pekerjaan Anda..."></textarea>
+                            </div>
+                        {% else %}
+                            <div class="space-y-4">
+                                <p class="text-sm text-gray-600">Kirimkan respons Anda:</p>
+                                <textarea name="submission_text" rows="8" required 
+                                         class="w-full px-4 py-3 border border-border-gray rounded-lg focus:outline-none focus:border-lime focus:ring-2 focus:ring-lime"
+                                         placeholder="Ketik respons Anda..."></textarea>
+                            </div>
+                        {% endif %}
+
+                        <div class="flex gap-4">
+                            <button type="submit" class="flex-1 btn-cta btn-animate btn-pulse py-3 rounded font-semibold">
+                                Kirim Jawaban
+                            </button>
+                            <a href="{{ url_for('student.module', module_id=module.id) }}" 
+                               class="flex-1 bg-light-gray text-dark-green py-3 rounded-lg font-semibold hover:bg-border-gray transition text-center">
+                                Batal
+                            </a>
+                        </div>
+                    </form>
+
+                    <script>
+                        (function(){
+                            const playBtn = document.getElementById('play-doa');
+                            const startBtn = document.getElementById('start-assessment');
+                            const modal = document.getElementById('prayer-prompt');
+                            const form = document.getElementById('assessment-form');
+                            playBtn && playBtn.addEventListener('click', ()=>{
+                                try{
+                                    const a = new Audio("{{ url_for('static', filename='audio/doa_pendek.mp3') }}");
+                                    a.play();
+                                }catch(e){
+                                    console.warn('Audio doa tidak tersedia');
+                                }
+                            });
+                            startBtn && startBtn.addEventListener('click', ()=>{
+                                modal.style.display = 'none';
+                                form.style.display = 'block';
+                            });
+                        })();
+                    </script>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Sidebar -->
+        <div class="bg-white rounded-lg shadow-sm p-6 border-l-4 border-lime h-fit">
+            <h3 class="text-lg font-bold text-dark-green mb-4">Detail Penilaian</h3>
+            <div class="space-y-4 text-sm">
+                <div>
+                    <p class="text-gray-600">Tipe</p>
+                    <p class="font-semibold text-dark-green">{{ assessment.assessment_type.replace('_', ' ').title() }}</p>
+                </div>
+                <div>
+                    <p class="text-gray-600">Skor Maksimal</p>
+                    <p class="font-semibold text-dark-green">{{ assessment.max_score }}</p>
+                </div>
+                {% if assessment.due_date %}
+                    <div>
+                        <p class="text-gray-600">Tenggat Waktu</p>
+                        <p class="font-semibold text-dark-green">{{ assessment.due_date.strftime('%d %b %Y %H:%M') }}</p>
+                    </div>
+                {% endif %}
+                <div>
+                    <p class="text-gray-600">Percobaan</p>
+                    <p class="font-semibold text-dark-green">
+                        {% if assessment.allow_multiple_attempts %}
+                            Unlimited
+                        {% else %}
+                            1 kali
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

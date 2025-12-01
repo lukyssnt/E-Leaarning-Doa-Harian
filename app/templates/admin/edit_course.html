@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Kursus - E-Learning Platform{% endblock %}
+
+{% block content %}
+<div class="space-y-8">
+    <!-- Header -->
+    <div class="bg-gradient-to-r from-dark-green to-lime rounded-lg p-8 text-white">
+        <h1 class="text-4xl font-bold">Edit Kursus</h1>
+        <p class="text-lg opacity-90 mt-2">{{ course.title }}</p>
+    </div>
+    
+    <!-- Form -->
+    <div class="bg-white rounded-lg shadow-sm p-8">
+        <form method="POST" class="space-y-6">
+            <div>
+                <label class="block text-sm font-semibold text-dark-green mb-2">Judul Kursus</label>
+                <input type="text" name="title" value="{{ course.title }}" required
+                       class="w-full px-4 py-2 border border-border-gray rounded-lg focus:outline-none focus:border-lime focus:ring-2 focus:ring-lime">
+            </div>
+            
+            <div>
+                <label class="block text-sm font-semibold text-dark-green mb-2">Deskripsi</label>
+                <textarea name="description" rows="4" 
+                          class="w-full px-4 py-2 border border-border-gray rounded-lg focus:outline-none focus:border-lime focus:ring-2 focus:ring-lime">{{ course.description or '' }}</textarea>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-sm font-semibold text-dark-green mb-2">Instruktur</label>
+                    <select name="instructor_id" required class="w-full px-4 py-2 border border-border-gray rounded-lg focus:outline-none focus:border-lime focus:ring-2 focus:ring-lime">
+                        {% for instructor in instructors %}
+                            <option value="{{ instructor.id }}" {% if instructor.id == course.instructor_id %}selected{% endif %}>{{ instructor.full_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-dark-green mb-2">Kategori</label>
+                    <input type="text" name="category" value="{{ course.category or '' }}"
+                           class="w-full px-4 py-2 border border-border-gray rounded-lg focus:outline-none focus:border-lime focus:ring-2 focus:ring-lime">
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-sm font-semibold text-dark-green mb-2">Level</label>
+                    <select name="level" class="w-full px-4 py-2 border border-border-gray rounded-lg focus:outline-none focus:border-lime focus:ring-2 focus:ring-lime">
+                        <option value="beginner" {% if course.level == 'beginner' %}selected{% endif %}>Beginner</option>
+                        <option value="intermediate" {% if course.level == 'intermediate' %}selected{% endif %}>Intermediate</option>
+                        <option value="advanced" {% if course.level == 'advanced' %}selected{% endif %}>Advanced</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-dark-green mb-2">Status</label>
+                    <select name="status" class="w-full px-4 py-2 border border-border-gray rounded-lg focus:outline-none focus:border-lime focus:ring-2 focus:ring-lime">
+                        <option value="draft" {% if course.status == 'draft' %}selected{% endif %}>Draft</option>
+                        <option value="published" {% if course.status == 'published' %}selected{% endif %}>Published</option>
+                        <option value="archived" {% if course.status == 'archived' %}selected{% endif %}>Archived</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="flex gap-4">
+                <button type="submit" class="flex-1 bg-dark-green text-white py-2 rounded-lg font-semibold hover:bg-lime hover:text-dark-green transition">
+                    Simpan Perubahan
+                </button>
+                <a href="{{ url_for('admin.manage_courses') }}" class="flex-1 bg-light-gray text-dark-green py-2 rounded-lg font-semibold hover:bg-border-gray transition text-center">
+                    Batal
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

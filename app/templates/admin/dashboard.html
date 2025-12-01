@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard Admin - E-Learning Platform{% endblock %}
+
+{% block content %}
+<div class="space-y-8">
+    <!-- Header -->
+    <div class="bg-gradient-to-r from-dark-green to-lime rounded-lg p-8 text-white">
+        <h1 class="text-4xl font-bold mb-2">Dashboard Admin</h1>
+        <p class="text-lg opacity-90">Kelola platform E-Learning</p>
+    </div>
+    
+    <!-- Stats Section -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+        <div class="bg-white rounded-lg shadow-sm p-6 border-l-4 border-lime">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-600 text-sm">Total Pengguna</p>
+                    <p class="text-3xl font-bold text-dark-green">{{ stats.total_users }}</p>
+                </div>
+                <div class="text-4xl">👥</div>
+            </div>
+        </div>
+        
+        <div class="bg-white rounded-lg shadow-sm p-6 border-l-4 border-dark-green">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-600 text-sm">Siswa</p>
+                    <p class="text-3xl font-bold text-dark-green">{{ stats.total_students }}</p>
+                </div>
+                <div class="text-4xl">📚</div>
+            </div>
+        </div>
+        
+        <div class="bg-white rounded-lg shadow-sm p-6 border-l-4 border-lime">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-600 text-sm">Instruktur</p>
+                    <p class="text-3xl font-bold text-dark-green">{{ stats.total_instructors }}</p>
+                </div>
+                <div class="text-4xl">🎓</div>
+            </div>
+        </div>
+        
+        <div class="bg-white rounded-lg shadow-sm p-6 border-l-4 border-dark-green">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-600 text-sm">Total Kursus</p>
+                    <p class="text-3xl font-bold text-dark-green">{{ stats.total_courses }}</p>
+                </div>
+                <div class="text-4xl">📖</div>
+            </div>
+        </div>
+        
+        <div class="bg-white rounded-lg shadow-sm p-6 border-l-4 border-lime">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-600 text-sm">Dipublikasi</p>
+                    <p class="text-3xl font-bold text-dark-green">{{ stats.published_courses }}</p>
+                </div>
+                <div class="text-4xl">✓</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Quick Actions -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <a href="{{ url_for('admin.manage_users') }}" class="bg-white rounded-lg shadow-sm p-8 hover:shadow-lg transition border-l-4 border-dark-green">
+            <h3 class="text-xl font-bold text-dark-green mb-2">Kelola Pengguna</h3>
+            <p class="text-gray-600 mb-4">Lihat, edit, atau hapus pengguna</p>
+            <span class="text-lime hover:text-dark-green transition font-semibold">Kelola →</span>
+        </a>
+        
+        <a href="{{ url_for('admin.manage_courses') }}" class="bg-white rounded-lg shadow-sm p-8 hover:shadow-lg transition border-l-4 border-lime">
+            <h3 class="text-xl font-bold text-dark-green mb-2">Kelola Kursus</h3>
+            <p class="text-gray-600 mb-4">Buat, edit, atau hapus kursus</p>
+            <span class="text-lime hover:text-dark-green transition font-semibold">Kelola →</span>
+        </a>
+        
+        <a href="{{ url_for('admin.create_course') }}" class="bg-white rounded-lg shadow-sm p-8 hover:shadow-lg transition border-l-4 border-dark-green">
+            <h3 class="text-xl font-bold text-dark-green mb-2">Kursus Baru</h3>
+            <p class="text-gray-600 mb-4">Tambahkan kursus baru ke platform</p>
+            <span class="text-lime hover:text-dark-green transition font-semibold">Buat →</span>
+        </a>
+    </div>
+</div>
+{% endblock %}

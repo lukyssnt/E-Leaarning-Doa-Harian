@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block title %}Buat Modul - E-Learning Platform{% endblock %}
+
+{% block content %}
+<div class="space-y-8">
+    <!-- Breadcrumb -->
+    <div class="text-sm text-gray-600">
+        <a href="{{ url_for('instructor.dashboard') }}" class="hover:text-lime">Dashboard</a> / 
+        <a href="{{ url_for('instructor.manage_course', course_id=course.id) }}" class="hover:text-lime">{{ course.title }}</a> / 
+        <span class="text-dark-green font-semibold">Modul Baru</span>
+    </div>
+    
+    <!-- Header -->
+    <div class="bg-gradient-to-r from-dark-green to-lime rounded-lg p-8 text-white">
+        <h1 class="text-4xl font-bold">Buat Modul Baru</h1>
+        <p class="text-lg opacity-90 mt-2">Tambahkan materi pembelajaran untuk {{ course.title }}</p>
+    </div>
+    
+    <!-- Form -->
+    <div class="form-card">
+        <form method="POST" class="space-y-6">
+            <div>
+                <label class="block text-sm font-semibold text-dark-green mb-2">Judul Modul</label>
+                <input type="text" name="title" required
+                       class="w-full px-4 py-2 border border-border-gray rounded-lg focus:outline-none focus:border-lime focus:ring-2 focus:ring-lime"
+                       placeholder="Contoh: Pengenalan Django">
+            </div>
+            
+            <div>
+                <label class="block text-sm font-semibold text-dark-green mb-2">Deskripsi Singkat</label>
+                <textarea name="description" rows="3" 
+                          class="w-full px-4 py-2 border border-border-gray rounded-lg focus:outline-none focus:border-lime focus:ring-2 focus:ring-lime"
+                          placeholder="Jelaskan apa yang akan dipelajari dalam modul ini"></textarea>
+            </div>
+            
+            <div>
+                <label class="block text-sm font-semibold text-dark-green mb-2">Konten Pembelajaran</label>
+                <textarea name="content" rows="8" 
+                          class="w-full px-4 py-2 border border-border-gray rounded-lg focus:outline-none focus:border-lime focus:ring-2 focus:ring-lime font-mono text-sm"
+                          placeholder="Masukkan konten materi pembelajaran di sini (dapat berupa teks, HTML, atau markdown)"></textarea>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-sm font-semibold text-dark-green mb-2">URL File (Video/Audio/PDF)</label>
+                    <input type="url" name="file_url"
+                           class="w-full px-4 py-2 border border-border-gray rounded-lg focus:outline-none focus:border-lime focus:ring-2 focus:ring-lime"
+                           placeholder="https://example.com/file.mp4">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-dark-green mb-2">Durasi (menit)</label>
+                    <input type="number" name="duration_minutes" min="1"
+                           class="w-full px-4 py-2 border border-border-gray rounded-lg focus:outline-none focus:border-lime focus:ring-2 focus:ring-lime"
+                           placeholder="60">
+                </div>
+            </div>
+            
+            <div>
+                <label class="block text-sm font-semibold text-dark-green mb-2">Status</label>
+                <select name="status" class="w-full px-4 py-2 border border-border-gray rounded-lg focus:outline-none focus:border-lime focus:ring-2 focus:ring-lime">
+                    <option value="draft">Draft</option>
+                    <option value="published">Published</option>
+                </select>
+            </div>
+            
+            <div class="flex gap-4">
+                <button type="submit" class="btn-cta btn-animate btn-pulse px-6 py-2 rounded font-semibold">
+                    Buat Modul
+                </button>
+                <a href="{{ url_for('instructor.manage_course', course_id=course.id) }}" 
+                   class="bg-light-gray text-dark-green px-6 py-2 rounded hover:bg-border-gray transition font-semibold">
+                    Batal
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

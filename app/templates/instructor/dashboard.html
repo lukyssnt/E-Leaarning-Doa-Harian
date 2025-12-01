@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard Instruktur - E-Learning Platform{% endblock %}
+
+{% block content %}
+<div class="space-y-8">
+    <!-- Header -->
+    <div class="bg-gradient-to-r from-dark-green to-lime rounded-lg p-8 text-white">
+        <h1 class="text-4xl font-bold mb-2">Selamat Datang, {{ current_user.full_name }}!</h1>
+        <p class="text-lg opacity-90">Dashboard Instruktur</p>
+    </div>
+    
+    <!-- Stats Section -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="bg-white rounded-lg shadow-sm p-6 border-l-4 border-lime">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-600 text-sm">Total Kursus</p>
+                    <p class="text-3xl font-bold text-dark-green">{{ stats.total_courses }}</p>
+                </div>
+                <div class="text-4xl">📚</div>
+            </div>
+        </div>
+        
+        <div class="bg-white rounded-lg shadow-sm p-6 border-l-4 border-dark-green">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-600 text-sm">Kursus Dipublikasi</p>
+                    <p class="text-3xl font-bold text-dark-green">{{ stats.published_courses }}</p>
+                </div>
+                <div class="text-4xl">✓</div>
+            </div>
+        </div>
+        
+        <div class="bg-white rounded-lg shadow-sm p-6 border-l-4 border-lime">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-600 text-sm">Total Siswa</p>
+                    <p class="text-3xl font-bold text-dark-green">{{ stats.total_students }}</p>
+                </div>
+                <div class="text-4xl">👥</div>
+            </div>
+        </div>
+        
+        <div class="bg-white rounded-lg shadow-sm p-6 border-l-4 border-dark-green">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-600 text-sm">Menunggu Penilaian</p>
+                    <p class="text-3xl font-bold text-lime">{{ stats.pending_reviews }}</p>
+                </div>
+                <div class="text-4xl">📋</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Courses Section -->
+    <div class="bg-white rounded-lg shadow-sm p-8">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-bold text-dark-green">Kursus Saya</h2>
+            <a href="{{ url_for('instructor.create_course') }}" class="bg-dark-green text-white px-4 py-2 rounded hover:bg-lime hover:text-dark-green transition font-semibold">
+                + Kursus Baru
+            </a>
+        </div>
+        
+        {% if courses %}
+            <div class="space-y-4">
+                {% for course in courses %}
+                    <div class="bg-light-gray p-6 rounded-lg hover:shadow-md transition border-l-4 border-lime">
+                        <div class="flex justify-between items-start">
+                            <div class="flex-1">
+                                <h3 class="text-lg font-semibold text-dark-green">{{ course.title }}</h3>
+                                <p class="text-gray-600 text-sm mt-2">{{ course.description }}</p>
+                                <div class="mt-3 flex gap-4 text-xs">
+                                    <span class="bg-white px-2 py-1 rounded">{{ course.enrollments|length }} Siswa</span>
+                                    <span class="bg-white px-2 py-1 rounded">{{ course.modules|length }} Modul</span>
+                                    <span class="bg-{{ 'lime' if course.is_published() else 'border' }}-gray px-2 py-1 rounded">{{ course.status.upper() }}</span>
+                                </div>
+                            </div>
+                            <div class="flex gap-2">
+                                <a href="{{ url_for('instructor.manage_course', course_id=course.id) }}" 
+                                   class="bg-dark-green text-white px-4 py-2 rounded hover:bg-lime hover:text-dark-green transition text-sm font-semibold">
+                                    Kelola
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-center text-gray-600 py-8">Anda belum membuat kursus. <a href="{{ url_for('instructor.create_course') }}" class="text-lime hover:text-dark-green transition font-semibold">Buat sekarang</a></p>
+        {% endif %}
+    </div>
+    
+    <!-- Quick Actions -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <a href="{{ url_for('instructor.review_submissions') }}" class="bg-white rounded-lg shadow-sm p-8 hover:shadow-lg transition border-l-4 border-dark-green">
+            <h3 class="text-xl font-bold text-dark-green mb-2">Penilaian Menunggu</h3>
+            <p class="text-gray-600">Tinjau dan beri nilai jawaban siswa</p>
+            <div class="text-right mt-4">
+                <span class="text-2xl font-bold text-lime">{{ stats.pending_reviews }}</span>
+            </div>
+        </a>
+        
+        <div class="bg-white rounded-lg shadow-sm p-8 border-l-4 border-lime">
+            <h3 class="text-xl font-bold text-dark-green mb-2">Statistik</h3>
+            <p class="text-gray-600">Lihat aktivitas dan progress siswa Anda</p>
+            <div class="text-right mt-4">
+                <button class="text-lime hover:text-dark-green transition font-semibold">Lihat Laporan →</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

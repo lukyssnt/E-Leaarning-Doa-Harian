@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Login - E-Learning Platform{% endblock %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center">
+    <div class="bg-white rounded-lg shadow-lg p-8 max-w-md w-full">
+        <h1 class="text-3xl font-bold text-dark-green mb-6 text-center">Login</h1>
+        
+        <form method="POST" class="space-y-6">
+            <div>
+                <label class="block text-sm font-semibold text-dark-green mb-2">Username</label>
+                <input type="text" name="username" required 
+                       class="w-full px-4 py-2 border border-border-gray rounded-lg focus:outline-none focus:border-lime focus:ring-2 focus:ring-lime"
+                       placeholder="Masukkan username">
+            </div>
+            
+            <div>
+                <label class="block text-sm font-semibold text-dark-green mb-2">Password</label>
+                <input type="password" name="password" required 
+                       class="w-full px-4 py-2 border border-border-gray rounded-lg focus:outline-none focus:border-lime focus:ring-2 focus:ring-lime"
+                       placeholder="Masukkan password">
+            </div>
+            
+            <div class="flex items-center">
+                <input type="checkbox" id="remember" name="remember" 
+                       class="h-4 w-4 text-lime focus:ring-lime border-border-gray rounded">
+                <label for="remember" class="ml-2 text-sm text-gray-600">Ingat saya</label>
+            </div>
+            
+            <button type="submit" class="w-full bg-dark-green text-white py-2 rounded-lg font-semibold hover:bg-lime hover:text-dark-green transition">
+                Masuk
+            </button>
+        </form>
+        
+        <p class="text-center text-gray-600 mt-6">
+            Belum punya akun? <a href="{{ url_for('auth.register') }}" class="text-lime font-semibold hover:text-dark-green">Daftar di sini</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

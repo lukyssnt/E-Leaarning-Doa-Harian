@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}{{ course.title }} - E-Learning Platform{% endblock %}
+
+{% block content %}
+<div class="space-y-8">
+    <!-- Breadcrumb -->
+    <div class="text-sm text-gray-600">
+        <a href="{{ url_for('student.dashboard') }}" class="hover:text-lime">Dashboard</a> / 
+        <span class="text-dark-green font-semibold">{{ course.title }}</span>
+    </div>
+    
+    <!-- Header -->
+    <div class="bg-gradient-to-r from-dark-green to-lime rounded-lg p-8 text-white">
+        <h1 class="text-4xl font-bold mb-2">{{ course.title }}</h1>
+        <p class="text-lg opacity-90">{{ course.description }}</p>
+        <div class="mt-6 flex gap-6">
+            <div>
+                <p class="text-sm opacity-75">Instruktur</p>
+                <p class="font-semibold">{{ course.instructor.full_name }}</p>
+            </div>
+            <div>
+                <p class="text-sm opacity-75">Level</p>
+                <p class="font-semibold">{{ course.level.capitalize() }}</p>
+            </div>
+            <div>
+                <p class="text-sm opacity-75">Kategori</p>
+                <p class="font-semibold">{{ course.category }}</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Progress Bar -->
+    <div class="bg-white rounded-lg shadow-sm p-6">
+        <div class="flex justify-between items-center mb-2">
+            <h3 class="text-lg font-semibold text-dark-green">Progres Kursus</h3>
+            <span class="text-2xl font-bold text-lime">{{ "%.0f"|format(enrollment.progress_percentage) }}%</span>
+        </div>
+        <div class="w-full bg-border-gray rounded-full h-3 overflow-hidden">
+            <div class="bg-gradient-to-r from-dark-green to-lime h-3 rounded-full" 
+                 style="width: {{ '%.1f'|format(enrollment.progress_percentage) }}%;"></div>
+        </div>
+    </div>
+    
+    <!-- Modules -->
+    <div class="bg-white rounded-lg shadow-sm p-8">
+        <h2 class="text-2xl font-bold text-dark-green mb-6">Materi Pembelajaran</h2>
+        
+        {% if modules %}
+            <div class="space-y-4">
+                {% for module in modules %}
+                    <div class="bg-light-gray rounded-lg p-6 hover:shadow-md transition border-l-4 border-lime">
+                        <div class="flex justify-between items-start">
+                            <div class="flex-1">
+                                <h3 class="text-lg font-semibold text-dark-green">{{ module.title }}</h3>
+                                <p class="text-gray-600 text-sm mt-2">{{ module.description }}</p>
+                                {% if module.duration_minutes %}
+                                    <p class="text-xs text-gray-500 mt-2">⏱️ {{ module.duration_minutes }} menit</p>
+                                {% endif %}
+                            </div>
+                            <a href="{{ url_for('student.module', module_id=module.id) }}" 
+                               class="ml-4 bg-dark-green text-white px-6 py-2 rounded hover:bg-lime hover:text-dark-green transition font-semibold whitespace-nowrap">
+                                Buka Materi
+                            </a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-gray-600 text-center py-8">Belum ada materi pembelajaran yang tersedia untuk kursus ini.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

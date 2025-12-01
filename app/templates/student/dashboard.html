@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard Siswa - E-Learning Platform{% endblock %}
+
+{% block content %}
+<div class="space-y-8">
+    <!-- Header -->
+    <div class="bg-gradient-to-r from-dark-green to-lime rounded-lg p-8 text-white">
+        <h1 class="text-4xl font-bold mb-2">Selamat Datang, {{ current_user.full_name }}!</h1>
+        <p class="text-lg opacity-90">Dashboard pembelajaran Anda</p>
+    </div>
+    
+    <!-- Stats Section -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-white rounded-lg shadow-sm p-6 border-l-4 border-lime">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-600 text-sm">Kursus Aktif</p>
+                    <p class="text-3xl font-bold text-dark-green">{{ stats.total_courses }}</p>
+                </div>
+                <div class="text-4xl">📚</div>
+            </div>
+        </div>
+        
+        <div class="bg-white rounded-lg shadow-sm p-6 border-l-4 border-dark-green">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-600 text-sm">Penilaian Selesai</p>
+                    <p class="text-3xl font-bold text-dark-green">{{ stats.completed_assessments }}</p>
+                </div>
+                <div class="text-4xl">✓</div>
+            </div>
+        </div>
+        
+        <div class="bg-white rounded-lg shadow-sm p-6 border-l-4 border-lime">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-600 text-sm">Terdaftar</p>
+                    <p class="text-3xl font-bold text-dark-green">{{ stats.active_enrollments }}</p>
+                </div>
+                <div class="text-4xl">👤</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Courses Section -->
+    <div class="bg-white rounded-lg shadow-sm p-8">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-bold text-dark-green">Kursus Saya</h2>
+            <a href="{{ url_for('student.progress') }}" class="text-lime hover:text-dark-green transition">Lihat Progres →</a>
+        </div>
+        
+        {% if courses %}
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {% for item in courses %}
+                    {% set course = item.course %}
+                    {% set progress = item.progress %}
+                    <div class="bg-light-gray rounded-lg overflow-hidden hover:shadow-lg transition">
+                        <div class="bg-gradient-to-r from-dark-green to-lime h-32 flex items-center justify-center">
+                            <span class="text-4xl">📖</span>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-lg font-semibold text-dark-green mb-2">{{ course.title }}</h3>
+                            <p class="text-gray-600 text-sm mb-4 line-clamp-2">{{ course.description }}</p>
+                            
+                            <!-- Progress Bar -->
+                            <div class="mb-4">
+                                <div class="flex justify-between text-xs text-gray-600 mb-2">
+                                        <span>Progres</span>
+                                        <span>{{ "%.0f"|format(progress) }}%</span>
+                                    </div>
+                                        <div class="w-full bg-border-gray rounded-full h-2 overflow-hidden">
+                                        <div class="bg-lime h-2 rounded-full" style="width: {{ '%.1f'|format(progress) }}%;"></div>
+                                    </div>
+                            </div>
+                            
+                            <a href="{{ url_for('student.course', course_id=course.id) }}" 
+                               class="inline-block bg-dark-green text-white px-4 py-2 rounded hover:bg-lime hover:text-dark-green transition text-sm font-semibold">
+                                Lanjutkan Belajar
+                            </a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="text-center py-12">
+                <p class="text-gray-600 text-lg mb-4">Anda belum terdaftar di kursus apapun</p>
+                <a href="/" class="text-lime hover:text-dark-green transition font-semibold">Jelajahi Kursus →</a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
