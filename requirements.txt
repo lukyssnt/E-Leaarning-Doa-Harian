@@ -5,8 +5,6 @@ certifi==2025.8.3
 cffi==1.17.1
 charset-normalizer==3.4.3
 click==8.1.7
-colorama==0.4.6
-comtypes==1.4.11
 et_xmlfile==2.0.0
 Flask==2.3.3
 Flask-Login==0.6.3
@@ -26,22 +24,13 @@ openpyxl==3.1.5
 packaging==25.0
 pycparser==2.22
 PyMySQL==1.1.2
-pypiwin32==223
-PyQt6==6.9.1
-PyQt6-Qt6==6.9.1
-PyQt6_sip==13.10.2
 python-docx==1.2.0
 python-dotenv==1.0.0
-pyttsx3==2.99
 requests==2.32.5
-sounddevice==0.5.2
 SQLAlchemy==2.0.44
 srt==3.5.3
 tomli==2.3.0
 tqdm==4.67.1
 typing_extensions==4.15.0
 urllib3==2.5.0
-vosk==0.3.45
-websockets==15.0.1
 Werkzeug==2.3.7
-pywin32; sys_platform == "win32"
